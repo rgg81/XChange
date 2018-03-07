@@ -111,7 +111,7 @@ public class PoloniexAdapters {
 
   public static Trade adaptPoloniexPublicTrade(PoloniexPublicTrade poloniexTrade, CurrencyPair currencyPair) {
 
-    OrderType type = poloniexTrade.getType().equalsIgnoreCase("buy") ? OrderType.BID : OrderType.ASK;
+    OrderType type = poloniexTrade.getType().equalsIgnoreCase("1") ? OrderType.BID : OrderType.ASK;
     Date timestamp = PoloniexUtils.stringToDate(poloniexTrade.getDate());
 
     Trade trade = new Trade(type, poloniexTrade.getAmount(), currencyPair, poloniexTrade.getRate(), timestamp, poloniexTrade.getTradeID());
@@ -139,9 +139,8 @@ public class PoloniexAdapters {
       List<LoanOrder> loanOrders = new ArrayList<>();
       for (PoloniexLoan poloniexLoan : item.getValue()) {
         Date date = PoloniexUtils.stringToDate(poloniexLoan.getDate());
-        loanOrders.add(
-            new FixedRateLoanOrder(OrderType.ASK, poloniexLoan.getCurrency(), poloniexLoan.getAmount(), poloniexLoan.getRange(), poloniexLoan.getId(),
-                date, poloniexLoan.getRate())); //TODO
+        loanOrders.add(new FixedRateLoanOrder(OrderType.ASK, poloniexLoan.getCurrency(), poloniexLoan.getAmount(), poloniexLoan.getRange(),
+                poloniexLoan.getId(), date, poloniexLoan.getRate())); //TODO
       }
       loans.put(item.getKey(), loanOrders);
     }
@@ -168,10 +167,10 @@ public class PoloniexAdapters {
 
     OrderType type = openOrder.getType().equals("buy") ? OrderType.BID : OrderType.ASK;
     Date timestamp = PoloniexUtils.stringToDate(openOrder.getDate());
+    LimitOrder limitOrder = new LimitOrder.Builder(type, currencyPair).limitPrice(openOrder.getRate()).originalAmount(openOrder.getAmount())
+            .id(openOrder.getOrderNumber()).timestamp(timestamp).build();
 
-    return new LimitOrder.Builder(type, currencyPair).limitPrice(openOrder.getRate()).originalAmount(openOrder.getStartingAmount())
-                                                     .cumulativeAmount(openOrder.getStartingAmount().subtract(openOrder.getAmount()))
-                                                     .id(openOrder.getOrderNumber()).timestamp(timestamp).build();
+    return limitOrder;
   }
 
   public static UserTrade adaptPoloniexUserTrade(PoloniexUserTrade userTrade, CurrencyPair currencyPair) {
@@ -195,11 +194,12 @@ public class PoloniexAdapters {
       feeCurrencyCode = currencyPair.base.getCurrencyCode();
     }
 
-    return new UserTrade(orderType, amount, currencyPair, price, date, tradeId, orderId, feeAmount, Currency.getInstance(feeCurrencyCode));
+    return new UserTrade(orderType, amount, currencyPair, price, date, tradeId, orderId, feeAmount,
+            Currency.getInstance(feeCurrencyCode));
   }
 
   public static ExchangeMetaData adaptToExchangeMetaData(Map<String, PoloniexCurrencyInfo> poloniexCurrencyInfo,
-      Map<String, PoloniexMarketData> poloniexMarketData, ExchangeMetaData exchangeMetaData) {
+                                                         Map<String, PoloniexMarketData> poloniexMarketData, ExchangeMetaData exchangeMetaData) {
 
     Map<Currency, CurrencyMetaData> currencyMetaDataMap = exchangeMetaData.getCurrencies();
     CurrencyMetaData currencyArchetype = currencyMetaDataMap.values().iterator().next();
@@ -228,17 +228,16 @@ public class PoloniexAdapters {
   public static List<FundingRecord> adaptFundingRecords(PoloniexDepositsWithdrawalsResponse poloFundings) {
     final ArrayList<FundingRecord> fundingRecords = new ArrayList<>();
     for (PoloniexDeposit d : poloFundings.getDeposits()) {
-      fundingRecords.add(
-          new FundingRecord(d.getAddress(), d.getTimestamp(), Currency.getInstance(d.getCurrency()), d.getAmount(), null, d.getTxid(), DEPOSIT,
-              FundingRecord.Status.resolveStatus(d.getStatus()), null, null, d.getStatus()));
+      fundingRecords.add(new FundingRecord(d.getAddress(), d.getTimestamp(), new Currency(d.getCurrency()),
+              d.getAmount(), null, d.getTxid(), DEPOSIT, FundingRecord.Status.resolveStatus(d.getStatus()), null, null, d.getStatus()));
     }
     for (PoloniexWithdrawal w : poloFundings.getWithdrawals()) {
       final String[] statusParts = w.getStatus().split(": *");
       final String statusStr = statusParts[0];
       final FundingRecord.Status status = FundingRecord.Status.resolveStatus(statusStr);
       final String externalId = statusParts.length == 1 ? null : statusParts[1];
-      fundingRecords.add(new FundingRecord(w.getAddress(), w.getTimestamp(), Currency.getInstance(w.getCurrency()), w.getAmount(),
-          String.valueOf(w.getWithdrawalNumber()), externalId, WITHDRAWAL, status, null, null, w.getStatus()));
+      fundingRecords.add(new FundingRecord(w.getAddress(), w.getTimestamp(), new Currency(w.getCurrency()),
+              w.getAmount(), String.valueOf(w.getWithdrawalNumber()), externalId, WITHDRAWAL, status, null, null, w.getStatus()));
     }
     return fundingRecords;
   }
