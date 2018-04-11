@@ -5,8 +5,8 @@
 
     <parent>
         <artifactId>xchange-parent</artifactId>
-        <groupId>org.knowm.xchange.roberto</groupId>
-        <version>4.3.5-SNAPSHOT</version>
+<groupId>org.knowm.xchange.roberto</groupId>
+        <version>4.3.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>xchange-cexio</artifactId>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.knowm.xchange.roberto</groupId>
             <artifactId>xchange-core</artifactId>
-            <version>4.3.5-SNAPSHOT</version>
+            <version>4.3.6-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
