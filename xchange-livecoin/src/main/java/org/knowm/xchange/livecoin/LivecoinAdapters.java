@@ -249,7 +249,7 @@ public class LivecoinAdapters {
         price,
         DateUtils.fromMillisUtc(Long.valueOf(map.get("date").toString())),
         id,
-        Optional.ofNullable(map.get("externalKey")).map(Object::toString).orElse(null),
+        map.get("externalKey").toString(),
         new BigDecimal(map.get("fee").toString()),
         getInstance(map.get("taxCurrency").toString()));
   }

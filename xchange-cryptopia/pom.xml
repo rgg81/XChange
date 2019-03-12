@@ -5,8 +5,8 @@
 
     <parent>
         <artifactId>xchange-parent</artifactId>
-        <groupId>org.knowm.xchange</groupId>
         <version>4.3.17-SNAPSHOT</version>
+        <groupId>org.knowm.xchange.roberto</groupId>
     </parent>
 
     <artifactId>xchange-cryptopia</artifactId>

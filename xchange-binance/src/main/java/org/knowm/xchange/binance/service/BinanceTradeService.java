@@ -116,6 +116,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
     if (lo.hasFlag(org.knowm.xchange.binance.dto.trade.BinanceOrderFlags.LIMIT_MAKER)) {
       type = OrderType.LIMIT_MAKER;
       tif = null;
+
     } else {
       type = OrderType.LIMIT;
       Set<IOrderFlags> orderFlags = lo.getOrderFlags();

@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>xchange-parent</artifactId>
-        <groupId>org.knowm.xchange</groupId>
+        <groupId>org.knowm.xchange.roberto</groupId>
         <version>4.3.17-SNAPSHOT</version>
     </parent>
 
@@ -19,7 +19,7 @@
 
         <!-- Project dependencies (version automatically set through parent) -->
         <dependency>
-            <groupId>org.knowm.xchange</groupId>
+            <groupId>org.knowm.xchange.roberto</groupId>
             <artifactId>xchange-core</artifactId>
             <version>4.3.17-SNAPSHOT</version>
         </dependency>

@@ -126,8 +126,7 @@ public class PoloniexAdapters {
   public static Trade adaptPoloniexPublicTrade(
       PoloniexPublicTrade poloniexTrade, CurrencyPair currencyPair) {
 
-    OrderType type =
-        poloniexTrade.getType().equalsIgnoreCase("buy") ? OrderType.BID : OrderType.ASK;
+    OrderType type = poloniexTrade.getType().equalsIgnoreCase("1") ? OrderType.BID : OrderType.ASK;
     Date timestamp = PoloniexUtils.stringToDate(poloniexTrade.getDate());
 
     Trade trade =
@@ -202,6 +201,13 @@ public class PoloniexAdapters {
 
     OrderType type = openOrder.getType().equals("buy") ? OrderType.BID : OrderType.ASK;
     Date timestamp = PoloniexUtils.stringToDate(openOrder.getDate());
+    LimitOrder limitOrder =
+        new LimitOrder.Builder(type, currencyPair)
+            .limitPrice(openOrder.getRate())
+            .originalAmount(openOrder.getAmount())
+            .id(openOrder.getOrderNumber())
+            .timestamp(timestamp)
+            .build();
 
     return new LimitOrder.Builder(type, currencyPair)
         .limitPrice(openOrder.getRate())
@@ -280,6 +286,7 @@ public class PoloniexAdapters {
       PoloniexDepositsWithdrawalsResponse poloFundings) {
     final ArrayList<FundingRecord> fundingRecords = new ArrayList<>();
     for (PoloniexDeposit d : poloFundings.getDeposits()) {
+
       fundingRecords.add(
           new FundingRecord(
               d.getAddress(),
@@ -299,6 +306,7 @@ public class PoloniexAdapters {
       final String statusStr = statusParts[0];
       final FundingRecord.Status status = FundingRecord.Status.resolveStatus(statusStr);
       final String externalId = statusParts.length == 1 ? null : statusParts[1];
+
       fundingRecords.add(
           new FundingRecord(
               w.getAddress(),

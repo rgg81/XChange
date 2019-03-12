@@ -46,6 +46,16 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
   public List<BinanceKline> klines(
       CurrencyPair pair, KlineInterval interval, Integer limit, Long startTime, Long endTime)
       throws IOException {
+    System.out.println(
+        BinanceAdapters.toSymbol(pair)
+            + " "
+            + interval.code()
+            + " "
+            + limit
+            + " "
+            + startTime
+            + " "
+            + endTime);
     List<Object[]> raw =
         binance.klines(BinanceAdapters.toSymbol(pair), interval.code(), limit, startTime, endTime);
     return raw.stream()

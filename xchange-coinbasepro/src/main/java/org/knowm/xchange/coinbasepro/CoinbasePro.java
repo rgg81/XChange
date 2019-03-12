@@ -168,7 +168,7 @@ public interface CoinbasePro {
    * @param orderId
    * @param productId
    * @return
-   * @throws CoinbaseProException
+   * @throws GDAXException
    * @throws IOException
    */
   @GET
