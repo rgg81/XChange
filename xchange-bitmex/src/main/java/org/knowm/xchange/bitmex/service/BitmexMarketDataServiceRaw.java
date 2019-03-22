@@ -44,6 +44,13 @@ public class BitmexMarketDataServiceRaw extends BitmexBaseService {
     return BitmexAdapters.adaptDepth(result);
   }
 
+  public BitmexDepth getBitmexDepth(String bitmexSymbol, Integer depth) throws ExchangeException {
+
+    BitmexPublicOrderList result =
+        updateRateLimit(() -> bitmex.getDepth(bitmexSymbol, depth.doubleValue()));
+    return BitmexAdapters.adaptDepth(result);
+  }
+
   public List<BitmexPublicTrade> getBitmexTrades(String bitmexSymbol, Integer limit, Long start)
       throws ExchangeException {
     return updateRateLimit(() -> bitmex.getTrades(bitmexSymbol, true, limit, start));
@@ -98,5 +105,21 @@ public class BitmexMarketDataServiceRaw extends BitmexBaseService {
 
     return updateRateLimit(
         () -> bitmex.getBucketedTrades(binSize, partial, bitmexSymbol, count, reverse));
+  }
+
+  public List<BitmexKline> getBucketedTradesComplete(
+      String binSize,
+      Boolean partial,
+      String bitmexSymbol,
+      long count,
+      Boolean reverse,
+      String startTime,
+      String endTime)
+      throws ExchangeException {
+
+    return updateRateLimit(
+        () ->
+            bitmex.getBucketedTradesComplete(
+                binSize, partial, bitmexSymbol, count, reverse, startTime, endTime));
   }
 }

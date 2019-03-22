@@ -37,6 +37,18 @@ public interface Bitmex {
       throws IOException, BitmexException;
 
   @GET
+  @Path("trade/bucketed")
+  BitmexKlineList getBucketedTradesComplete(
+      @QueryParam("binSize") String binSize,
+      @Nullable @QueryParam("partial") Boolean partial,
+      @Nullable @QueryParam("symbol") String symbol,
+      @QueryParam("count") Long count,
+      @Nullable @QueryParam("reverse") Boolean reverse,
+      @Nullable @QueryParam("startTime") String startTime,
+      @Nullable @QueryParam("endTime") String endTime)
+      throws IOException, BitmexException;
+
+  @GET
   @Path("orderBook/L2")
   BitmexPublicOrderList getDepth(
       @QueryParam("symbol") String currencyPair, @QueryParam("depth") Double depth)
